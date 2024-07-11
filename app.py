@@ -101,7 +101,7 @@ def edit():
 
 def handle_convert(filename, operation):
     new = convert(filename, operation)
-    flash(f"Your image has been processed and is available <a href='/{new}' target='_blank'>here</a>")
+    flash(f"Your image has been processed and is available <a href='/{new}' target='_blank'>here</a>", "success")
     return render_template("index.html")
 
 
