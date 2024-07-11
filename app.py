@@ -6,6 +6,14 @@ import os
 UPLOAD_FOLDER = 'uploads'
 CROPPED_FOLDER = 'static/cropped/'
 ALLOWED_EXTENSIONS = {'png', 'webp', 'jpg', 'jpeg', 'gif'}
+USERS = {
+    "gouravsingh": "12112430",
+    "raghav": "12345678",
+    "kritika": "12345678",
+    "divyanshu": "12345678",
+    "aaiman": "12345678"
+}
+
 
 
 app = Flask(__name__)
@@ -67,6 +75,16 @@ def about():
 
 @app.route("/login")
 def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if username in USERS and USERS[username] == password:
+            flash('Login successful!', 'success')
+            return render_template("index.html")
+        else:
+            flash('Invalid username or password', 'danger')
+
     return render_template("login.html")
 
 
@@ -121,4 +139,4 @@ def handle_crop_face(filename, file_path):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
