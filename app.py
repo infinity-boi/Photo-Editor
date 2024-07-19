@@ -15,12 +15,18 @@ USERS = {
 }
 
 
-
 app = Flask(__name__)
 app.secret_key = 'gouravthegreat'
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['CROPPED_FOLDER'] = CROPPED_FOLDER
+
+# Create the upload folder if it doesn't exist
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
+# Create the cropped folder if it doesn't exist
+if not os.path.exists(app.config['CROPPED_FOLDER']):
+    os.makedirs(app.config['CROPPED_FOLDER'])
+
 
 # Load OpenCV pre-trained face detector
 cv2_base_dir = os.path.dirname(os.path.abspath(cv2.__file__))
