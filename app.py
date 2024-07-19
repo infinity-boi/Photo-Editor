@@ -13,6 +13,7 @@ USERS = {
     "divyanshu": "12345678",
     "aaiman": "12345678"
 }
+isLogged = False
 
 
 app = Flask(__name__)
@@ -65,7 +66,7 @@ def convert(filename, operation):
 
 @app.route('/')
 def home():  # put application's code here
-    return render_template("index.html")
+    return render_template("index.html", isLogged=isLogged)
 
 
 @app.route("/about")
@@ -73,15 +74,17 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/login")
+@app.route("/login",  methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
         if username in USERS and USERS[username] == password:
+            global isLogged
+            isLogged = True
             flash('Login successful!', 'success')
-            return render_template("index.html")
+            return render_template("index.html", isLogged=isLogged, username=username)
         else:
             flash('Invalid username or password', 'danger')
 
@@ -114,6 +117,13 @@ def edit():
                 return handle_convert(filename, operation)
             elif action == 'crop_face':
                 return handle_crop_face(filename, file_path)
+            elif action == 'read_text':
+                global isLogged
+                if isLogged:
+                    # logic
+                    return render_template("index.html")
+                else:
+                    return render_template("login.html")
     return render_template("index.html")
 
 
