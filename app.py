@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, flash
 import cv2
+import pytesseract
 from werkzeug.utils import secure_filename
 import os
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'uploads/'
 CROPPED_FOLDER = 'static/cropped/'
 ALLOWED_EXTENSIONS = {'png', 'webp', 'jpg', 'jpeg', 'gif'}
 USERS = {
@@ -14,6 +15,9 @@ USERS = {
     "aaiman": "12345678"
 }
 isLogged = False
+
+# Path to the Tesseract executable
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 
 app = Flask(__name__)
@@ -119,11 +123,8 @@ def edit():
                 return handle_crop_face(filename, file_path)
             elif action == 'read_text':
                 global isLogged
-                if isLogged:
-                    # logic
-                    return render_template("index.html")
-                else:
-                    return render_template("login.html")
+                if True:   # isLogged
+                    return handle_read_text(file_path)
     return render_template("index.html")
 
 
@@ -146,6 +147,18 @@ def handle_crop_face(filename, file_path):
         cv2.imwrite(cropped_filepath, cropped_face)
         flash(f"Your image has been processed and is available <a href='/{cropped_filepath}' target='_blank'>here</a>", "success")
     return render_template("index.html")
+
+
+def handle_read_text(file_path):
+    print("inside read_text")
+    try:
+        img = cv2.imread(file_path)
+        text = pytesseract.image_to_string(img, config='-l eng --oem 1 --psm 3')
+    except Exception as e:
+        flash(e.__str__(), "error")
+        return render_template("index.html")
+    flash(f"Your image has been processed", "success")
+    return render_template("index.html", text_read=text)
 
 
 if __name__ == '__main__':
