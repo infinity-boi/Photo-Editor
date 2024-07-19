@@ -19,14 +19,8 @@ app = Flask(__name__)
 app.secret_key = 'gouravthegreat'
 
 
-# Create the upload folder if it doesn't exist
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
-
-# Create the cropped folder if it doesn't exist
-if not os.path.exists(app.config['CROPPED_FOLDER']):
-    os.makedirs(app.config['CROPPED_FOLDER'])
-
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['CROPPED_FOLDER'] = CROPPED_FOLDER
 
 # Load OpenCV pre-trained face detector
 cv2_base_dir = os.path.dirname(os.path.abspath(cv2.__file__))
@@ -144,5 +138,5 @@ def handle_crop_face(filename, file_path):
     return render_template("index.html")
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
